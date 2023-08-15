@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:game_chat_1/providers/auth_provider.dart';
+import 'package:game_chat_1/providers/create_room_provider.dart';
+import 'package:game_chat_1/providers/game_room_provider.dart';
 import 'package:game_chat_1/providers/homepage_provider.dart';
 import 'package:game_chat_1/screens/home_screen.dart';
 import 'package:game_chat_1/screens/login_screen.dart';
@@ -19,6 +21,9 @@ void main() async {
     providers: [
       ListenableProvider<HomePageProvider>(create: (_) => HomePageProvider()),
       ListenableProvider<AuthProvider>(create: (_) => AuthProvider()),
+      ListenableProvider<CreateRoomProvider>(create: (_) => CreateRoomProvider()),
+      ListenableProvider<GameRoomProvider>(create: (_) => GameRoomProvider()),
+
     ],
     child: MyApp(),
   ));
@@ -52,6 +57,3 @@ class MyApp extends StatelessWidget {
         ));
   }
 }
-//TO DO valid olmayan data push edilmeyecek
-// fotograf secilmedigi taktirde basic bir profil image secilecek
-//eksik bilgi pop up gelcek

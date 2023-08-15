@@ -109,10 +109,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               if (!provider.isAuthenticating)
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (ctx) =>
-                                                const AuthScreen()));
+                                    Navigator.of(context).pop(MaterialPageRoute(
+                                        builder: (ctx) => const AuthScreen()));
                                   },
                                   child: const Text(
                                     "Create an account.",
