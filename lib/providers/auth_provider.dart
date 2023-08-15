@@ -1,6 +1,6 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -22,13 +22,6 @@ class AuthProvider extends ChangeNotifier {
     try {
       final userCredential = await _firebase.createUserWithEmailAndPassword(
           email: enteredEmail, password: enteredPassword);
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('user-images')
-          .child('${userCredential.user!.uid}.jpg');
-
-      await storageRef.putFile(selectedImage!);
-      final imageUrl = await storageRef.getDownloadURL();
 
       FirebaseFirestore.instance
           .collection('users')
@@ -36,7 +29,6 @@ class AuthProvider extends ChangeNotifier {
           .set({
         'username': enteredUsername,
         'email': enteredEmail,
-        'image_url': imageUrl,
       });
     } on FirebaseAuthException catch (error) {
       ScaffoldMessenger.of(context).clearSnackBars();

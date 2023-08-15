@@ -52,3 +52,6 @@ class MyApp extends StatelessWidget {
         ));
   }
 }
+//TO DO valid olmayan data push edilmeyecek
+// fotograf secilmedigi taktirde basic bir profil image secilecek
+//eksik bilgi pop up gelcek

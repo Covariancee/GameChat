@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:game_chat_1/screens/widgets/user_image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
+import 'home_screen.dart';
 import 'login_screen.dart';
 
 final _firebase = FirebaseAuth.instance;
@@ -39,11 +37,6 @@ class _AuthScreenState extends State<AuthScreen> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              UserImagePicker(
-                                onPickImage: (File pickedImage) {
-                                  provider.selectedImage = pickedImage;
-                                },
-                              ),
                               TextFormField(
                                 decoration: const InputDecoration(
                                   labelText: 'Email Address',
@@ -101,6 +94,12 @@ class _AuthScreenState extends State<AuthScreen> {
                               if (!provider.isAuthenticating)
                                 ElevatedButton(
                                   onPressed: () {
+                                    if (provider.isAuthenticating == true) {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  const HomeScreen()));
+                                    }
                                     provider.register(context);
                                   },
                                   style: ElevatedButton.styleFrom(
