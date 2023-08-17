@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Rooms {
+class Games {
   String gameName;
   String roomCreator;
   String roomDescription;
   String roomName;
   int roomSize;
 
-  Rooms({
+  Games({
     required this.gameName,
     required this.roomCreator,
     required this.roomDescription,
@@ -15,9 +15,9 @@ class Rooms {
     required this.roomSize,
   });
 
-  factory Rooms.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  factory Games.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data();
-    return Rooms(
+    return Games(
       gameName: data?['game_name'],
       roomCreator: data?['room_creator'],
       roomDescription: data?['room_description'],

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'widgets/custom_drawer.dart';
+
 import '../providers/game_room_provider.dart';
 import 'create_room_screen.dart';
+import 'widgets/custom_drawer.dart';
 
 class GameRooms extends StatefulWidget {
   const GameRooms({super.key, required this.gameName});
@@ -38,8 +39,8 @@ class _GameRoomsState extends State<GameRooms> {
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (ctx) => CreateRoomScreen(
-                          gameName: widget.gameName,
-                        )));
+                              gameName: widget.gameName,
+                            )));
                   },
                   child: const Text("Create room"),
                 ),
@@ -53,7 +54,7 @@ class _GameRoomsState extends State<GameRooms> {
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return const Center(child: Text('No rooms found.'));
                     } else {
-                      final rooms = snapshot.data;
+                      final rooms = snapshot.data as List;
                       return ListView.builder(
                         shrinkWrap: true,
                         itemCount: rooms!.length,

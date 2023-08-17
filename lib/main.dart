@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:game_chat_1/providers/auth_provider.dart';
 import 'package:game_chat_1/providers/create_room_provider.dart';
 import 'package:game_chat_1/providers/game_room_provider.dart';
 import 'package:game_chat_1/providers/homepage_provider.dart';
-import 'package:game_chat_1/screens/home_screen.dart';
+import 'package:game_chat_1/screens/home_page.dart';
 import 'package:game_chat_1/screens/login_screen.dart';
 import 'package:game_chat_1/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -17,43 +18,57 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MultiProvider(
-    providers: [
-      ListenableProvider<HomePageProvider>(create: (_) => HomePageProvider()),
-      ListenableProvider<AuthProvider>(create: (_) => AuthProvider()),
-      ListenableProvider<CreateRoomProvider>(create: (_) => CreateRoomProvider()),
-      ListenableProvider<GameRoomProvider>(create: (_) => GameRoomProvider()),
-
-    ],
-    child: MyApp(),
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Game Chat',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ListenableProvider<HomePageProvider>(create: (_) => HomePageProvider()),
+        ListenableProvider<AuthProvider>(create: (_) => AuthProvider()),
+        ListenableProvider<CreateRoomProvider>(
+          create: (_) => CreateRoomProvider(),
         ),
-        home: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const SplashScreen();
-            }
+        ListenableProvider<GameRoomProvider>(create: (_) => GameRoomProvider()),
+      ],
+      child: StreamBuilder<ConnectivityResult>(
+        stream: Connectivity().onConnectivityChanged,
+        builder: (context, connectivitySnapshot) {
+          var connectivityResult = connectivitySnapshot.data;
+          var hasConnectivity = connectivityResult != ConnectivityResult.none;
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Game Chat',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            home: StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, authSnapshot) {
+                if (connectivitySnapshot.connectionState ==
+                        ConnectionState.waiting ||
+                    authSnapshot.connectionState == ConnectionState.waiting) {
+                  return const SplashScreen();
+                }
 
-            if (snapshot.hasData) {
-              return const HomeScreen();
-            }
-            return const LoginScreen();
-          },
-        ));
+                if (!hasConnectivity) {
+                  return const Center(child: Text('No internet connection'));
+                }
+
+                if (authSnapshot.hasData) {
+                  return const HomePage();
+                }
+                return const LoginScreen();
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 }
